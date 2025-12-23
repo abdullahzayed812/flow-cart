@@ -1,0 +1,52 @@
+{
+  "name": "flow-cart-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "docker-compose up",
+    "dev:build": "docker-compose up --build",
+    "down": "docker-compose down",
+    "down:volumes": "docker-compose down -v",
+    "logs": "docker-compose logs -f",
+    "logs:auth": "docker-compose logs -f auth-service",
+    "logs:ecommerce": "docker-compose logs -f ecommerce-service",
+    "logs:merchant": "docker-compose logs -f merchant-service",
+    "logs:warehouse": "docker-compose logs -f warehouse-service",
+    "logs:shipping": "docker-compose logs -f shipping-service",
+    "logs:notifications": "docker-compose logs -f notifications-service",
+    "dev:auth": "npm run dev --workspace=services/auth",
+    "dev:ecommerce": "npm run dev --workspace=services/ecommerce",
+    "dev:merchant": "npm run dev --workspace=services/merchant",
+    "dev:warehouse": "npm run dev --workspace=services/warehouse",
+    "dev:shipping": "npm run dev --workspace=services/shipping",
+    "dev:notifications": "npm run dev --workspace=services/notifications",
+    "mobile": "cd mobile && npm start",
+    "mobile:android": "cd mobile && npm run android",
+    "mobile:ios": "cd mobile && npm run ios",
+    "merchant-dashboard": "cd web/merchant-dashboard && npm start",
+    "admin-dashboard": "cd web/admin-dashboard && npm start",
+    "install:all": "npm run install:services && npm run install:web && npm run install:mobile",
+    "install:services": "cd services/auth && npm install && cd ../ecommerce && npm install && cd ../merchant && npm install && cd ../warehouse && npm install && cd ../shipping && npm install && cd ../notifications && npm install",
+    "install:web": "cd web/merchant-dashboard && npm install && cd ../admin-dashboard && npm install",
+    "install:mobile": "cd mobile && npm install",
+    "build": "npm run build --workspaces"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "nodemon": "^3.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.11.0",
+    "axios": "^1.13.2",
+    "lucide-react": "^0.555.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.9.6"
+  }
+}
