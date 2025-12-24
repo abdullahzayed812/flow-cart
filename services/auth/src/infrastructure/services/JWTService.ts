@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { UserRole } from "../../../../shared/types/enums";
+import { UserRole } from "@flow-cart/shared";
 
 export interface JWTPayload {
   userId: string;
@@ -20,11 +20,13 @@ export class JWTService {
   private static readonly REFRESH_TOKEN_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || "7d";
 
   static generateTokenPair(payload: JWTPayload): TokenPair {
-    const accessToken = jwt.sign(payload, this.ACCESS_TOKEN_SECRET, { expiresIn: this.ACCESS_TOKEN_EXPIRES_IN });
+    const accessToken = jwt.sign(payload, this.ACCESS_TOKEN_SECRET, {
+      expiresIn: this.ACCESS_TOKEN_EXPIRES_IN,
+    } as jwt.SignOptions);
 
     const refreshToken = jwt.sign({ userId: payload.userId }, this.REFRESH_TOKEN_SECRET, {
       expiresIn: this.REFRESH_TOKEN_EXPIRES_IN,
-    });
+    } as jwt.SignOptions);
 
     return {
       accessToken,

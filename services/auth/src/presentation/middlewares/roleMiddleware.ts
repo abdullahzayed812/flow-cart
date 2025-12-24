@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { AuthRequest } from './authMiddleware';
-import { UserRole } from '../../../../shared/types/enums';
+import { UserRole } from '@flow-cart/shared';
 
 export const roleMiddleware = (...allowedRoles: UserRole[]) => {
     return (req: AuthRequest, res: Response, next: NextFunction) => {

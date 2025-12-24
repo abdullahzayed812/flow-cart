@@ -1,7 +1,7 @@
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
 import { Merchant } from '../../domain/entities/Merchant';
-import { UserRole } from '../../../../shared/types/enums';
+import { UserRole } from '@flow-cart/shared';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface ApplyMerchantDTO {

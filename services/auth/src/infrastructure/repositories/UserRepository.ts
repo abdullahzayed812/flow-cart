@@ -1,7 +1,7 @@
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { User } from '../../domain/entities/User';
 import { Database } from '../database/Database';
-import { UserRole } from '../../../../shared/types/enums';
+import { UserRole } from '@flow-cart/shared';
 import { RowDataPacket } from 'mysql2';
 
 interface UserRow extends RowDataPacket {

@@ -1,4 +1,4 @@
-import { UserRole } from '../../../../shared/types/enums';
+import { UserRole } from '@flow-cart/shared';
 
 export class User {
     constructor(

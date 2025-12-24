@@ -5,7 +5,8 @@
   "workspaces": [
     "services/*",
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "shared"
   ],
   "scripts": {
     "dev": "docker-compose up",
@@ -25,11 +26,11 @@
     "dev:warehouse": "npm run dev --workspace=services/warehouse",
     "dev:shipping": "npm run dev --workspace=services/shipping",
     "dev:notifications": "npm run dev --workspace=services/notifications",
-    "mobile": "cd mobile && npm start",
+    "mobile": "cd mobile && npm run dev",
     "mobile:android": "cd mobile && npm run android",
     "mobile:ios": "cd mobile && npm run ios",
-    "merchant-dashboard": "cd web/merchant-dashboard && npm start",
-    "admin-dashboard": "cd web/admin-dashboard && npm start",
+    "merchant-dashboard": "cd web/merchant-dashboard && npm run dev",
+    "admin-dashboard": "cd web/admin-dashboard && npm run dev",
     "install:all": "npm run install:services && npm run install:web && npm run install:mobile",
     "install:services": "cd services/auth && npm install && cd ../ecommerce && npm install && cd ../merchant && npm install && cd ../warehouse && npm install && cd ../shipping && npm install && cd ../notifications && npm install",
     "install:web": "cd web/merchant-dashboard && npm install && cd ../admin-dashboard && npm install",

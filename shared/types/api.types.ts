@@ -10,6 +10,7 @@ export interface ApiResponse<T = any> {
         page?: number;
         limit?: number;
         total?: number;
+        total_pages?: number;
     };
 }
 
@@ -26,4 +27,16 @@ export interface PaginatedResponse<T> {
         total: number;
         total_pages: number;
     };
+}
+
+export class AppError extends Error {
+    public readonly statusCode: number;
+    public readonly isOperational: boolean;
+
+    constructor(message: string, statusCode: number, isOperational = true) {
+        super(message);
+        this.statusCode = statusCode;
+        this.isOperational = isOperational;
+        Object.setPrototypeOf(this, AppError.prototype);
+    }
 }
