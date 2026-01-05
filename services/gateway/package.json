@@ -1,22 +1,18 @@
 {
-    "name": "@flow-cart/ecommerce-service",
+    "name": "@flow-cart/gateway-service",
     "version": "1.0.0",
-    "main": "dist/app.js",
+    "main": "dist/index.js",
     "scripts": {
-        "dev": "nodemon src/app.ts",
+        "dev": "nodemon src/index.ts",
         "build": "tsc",
-        "start": "node dist/app.js",
-        "seed": "ts-node src/database/seed.ts"
+        "start": "node dist/index.js"
     },
     "dependencies": {
-        "@flow-cart/shared": "*",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
         "helmet": "^7.0.0",
-        "mysql2": "^3.6.0",
-        "redis": "^4.7.1",
-        "socket.io": "^4.8.1"
+        "http-proxy-middleware": "^2.0.6"
     },
     "devDependencies": {
         "@types/cors": "^2.8.13",

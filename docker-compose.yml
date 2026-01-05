@@ -96,12 +96,12 @@ services:
   # API GATEWAY
   # -------------------------------------------------------------------------
   gateway:
-    image: nginx:alpine
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
     container_name: flow_gateway
     ports:
       - "80:80"
-    volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - auth_service
       - ecommerce_service
