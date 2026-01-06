@@ -6,7 +6,9 @@
         "dev": "nodemon src/app.ts",
         "build": "tsc",
         "start": "node dist/app.js",
-        "seed": "ts-node src/database/seed.ts"
+        "seed": "ts-node src/database/seed.ts",
+        "migrate": "ts-node src/database/init.ts",
+        "reset": "ts-node src/database/reset.ts && npm run migrate && npm run seed"
     },
     "dependencies": {
         "@flow-cart/shared": "*",

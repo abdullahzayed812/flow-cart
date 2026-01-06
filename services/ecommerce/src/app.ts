@@ -1,39 +1,76 @@
-import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import dotenv from 'dotenv';
-import { checkDbConnection } from './config/database';
-import { connectRedis } from './config/redis';
-import routes from './presentation/routes';
-import { ApiResponse, AppError } from '@flow-cart/shared';
+import express, { Application } from "express";
+import cors from "cors";
+import helmet from "helmet";
+import dotenv from "dotenv";
+import { Database } from "./infrastructure/database/Database";
+import { ProductRepository } from "./infrastructure/repositories/ProductRepository";
+import { CartRepository } from "./infrastructure/repositories/CartRepository";
+import { OrderRepository } from "./infrastructure/repositories/OrderRepository";
+import { AddToCartUseCase } from "./application/usecases/AddToCartUseCase";
+import { CheckoutUseCase } from "./application/usecases/CheckoutUseCase";
+import { CartController } from "./presentation/controllers/CartController";
+import { OrderController } from "./presentation/controllers/OrderController";
+import { createEcommerceRoutes } from "./presentation/routes/ecommerceRoutes";
+import { requestLogger } from "@flow-cart/shared";
 
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 4002;
+export class EcommerceService {
+  private app: Application;
+  private port: number;
 
-app.use(cors());
-app.use(helmet());
-app.use(express.json());
+  constructor() {
+    this.app = express();
+    this.port = parseInt(process.env.PORT || "4002");
+    this.setupMiddlewares();
+    this.setupRoutes();
+  }
 
-app.use('/store', routes);
+  private setupMiddlewares(): void {
+    this.app.use(helmet());
+    this.app.use(cors());
+    this.app.use(requestLogger);
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+  }
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err);
-    if (err instanceof AppError) {
-        res.status(err.statusCode).json(ApiResponse.error(err.message));
-    } else {
-        res.status(500).json(ApiResponse.error('Internal Server Error'));
-    }
-});
+  private setupRoutes(): void {
+    const db = Database.getInstance();
 
-const startServer = async () => {
-    await checkDbConnection();
-    await connectRedis();
+    // Initialize repositories
+    const productRepository = new ProductRepository(db);
+    const cartRepository = new CartRepository(db);
+    const orderRepository = new OrderRepository(db);
 
-    app.listen(PORT, () => {
-        console.log(`🚀 E-Commerce Service running on port ${PORT}`);
+    // Initialize use cases
+    const addToCartUseCase = new AddToCartUseCase(cartRepository, productRepository);
+    const checkoutUseCase = new CheckoutUseCase(cartRepository, orderRepository, productRepository);
+
+    // Initialize controllers
+
+    const cartController = new CartController(addToCartUseCase, cartRepository);
+    const orderController = new OrderController(checkoutUseCase, orderRepository);
+
+    // Setup routes
+    this.app.use("/", createEcommerceRoutes(cartController, orderController));
+
+    // Health check
+    this.app.get("/health", (req, res) => {
+      res.status(200).json({ status: "ok", service: "ecommerce" });
     });
-};
 
-startServer();
+    // 404 handler
+    this.app.use((req, res) => {
+      res.status(404).json({
+        success: false,
+        error: { code: "NOT_FOUND", message: "Route not found" },
+      });
+    });
+  }
+
+  public start(): void {
+    this.app.listen(this.port, () => {
+      console.log(`🛍️  E-Commerce Service running on port ${this.port}`);
+    });
+  }
+}

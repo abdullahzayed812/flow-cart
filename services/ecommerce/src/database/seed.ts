@@ -1,10 +1,10 @@
-import { pool } from '../config/database';
+import { db } from '../infrastructure/database/Database';
 import { v4 as uuidv4 } from 'uuid';
 
 const seed = async () => {
     try {
         console.log('🌱 Seeding Ecommerce Service...');
-        const connection = await pool.getConnection();
+        const connection = await db.getPool().getConnection();
 
         // Check if orders exist
         const [rows]: any = await connection.query('SELECT COUNT(*) as count FROM orders');

@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
 import { Database } from './infrastructure/database/Database';
+import { requestLogger } from '@flow-cart/shared';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ class NotificationsService {
     private setupMiddlewares(): void {
         this.app.use(helmet());
         this.app.use(cors());
+        this.app.use(requestLogger);
         this.app.use(express.json());
     }
 

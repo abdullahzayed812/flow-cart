@@ -1,57 +1,62 @@
-import { pool } from '../config/database';
-import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcrypt';
+import { db } from "../infrastructure/database/Database";
+import bcrypt from "bcrypt";
 
 const seed = async () => {
-    try {
-        console.log('🌱 Seeding Auth Service...');
-        const connection = await pool.getConnection();
+  try {
+    console.log("🌱 Seeding Auth Service...");
+    const connection = await db.getPool().getConnection();
 
-        // Check if users exist
-        const [rows]: any = await connection.query('SELECT COUNT(*) as count FROM users');
-        if (rows[0].count > 0) {
-            console.log('⚠️  Users table already seeded. Skipping.');
-            connection.release();
-            process.exit(0);
-        }
-
-        const passwordHash = await bcrypt.hash('password123', 10);
-
-        const users = [
-            {
-                id: '11111111-1111-1111-1111-111111111111',
-                email: 'admin@flowcart.com',
-                password_hash: passwordHash,
-                role: 'admin'
-            },
-            {
-                id: '22222222-2222-2222-2222-222222222222',
-                email: 'merchant@flowcart.com',
-                password_hash: passwordHash,
-                role: 'merchant'
-            },
-            {
-                id: '33333333-3333-3333-3333-333333333333',
-                email: 'customer@flowcart.com',
-                password_hash: passwordHash,
-                role: 'customer'
-            }
-        ];
-
-        for (const user of users) {
-            await connection.query(
-                'INSERT INTO users (id, email, password_hash, role) VALUES (?, ?, ?, ?)',
-                [user.id, user.email, user.password_hash, user.role]
-            );
-        }
-
-        console.log('✅ Auth Service seeded successfully');
-        connection.release();
-        process.exit(0);
-    } catch (error) {
-        console.error('❌ Auth Service seeding failed:', error);
-        process.exit(1);
+    // Check if users exist
+    const [rows]: any = await connection.query("SELECT COUNT(*) as count FROM users");
+    if (rows[0].count > 0) {
+      console.log("⚠️  Users table already seeded. Skipping.");
+      connection.release();
+      process.exit(0);
     }
+
+    const passwordHash = await bcrypt.hash("password123", 10);
+
+    const users = [
+      {
+        id: "11111111-1111-1111-1111-111111111111",
+        email: "admin@flowcart.com",
+        password_hash: passwordHash,
+        role: "admin",
+        first_name: "Admin",
+        last_name: "User",
+      },
+      {
+        id: "22222222-2222-2222-2222-222222222222",
+        email: "merchant@flowcart.com",
+        password_hash: passwordHash,
+        role: "merchant",
+        first_name: "Merchant",
+        last_name: "User",
+      },
+      {
+        id: "33333333-3333-3333-3333-333333333333",
+        email: "customer@flowcart.com",
+        password_hash: passwordHash,
+        role: "customer",
+        first_name: "Customer",
+        last_name: "User",
+      },
+    ];
+
+    for (const user of users) {
+      await connection.query(
+        "INSERT INTO users (id, email, password_hash, role, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?)",
+        [user.id, user.email, user.password_hash, user.role, user.first_name, user.last_name]
+      );
+    }
+
+    console.log("✅ Auth Service seeded successfully");
+    connection.release();
+    process.exit(0);
+  } catch (error) {
+    console.error("❌ Auth Service seeding failed:", error);
+    process.exit(1);
+  }
 };
 
 seed();

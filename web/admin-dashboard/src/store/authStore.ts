@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     isLoading: true,
 
     login: async (email: string, password: string) => {
-        const response = await axios.post('/api/auth/login', { email, password });
+        const response = await axios.post('http://localhost:8000/auth/login', { email, password });
         const { access_token, refresh_token, user } = response.data.data;
 
         localStorage.setItem('access_token', access_token);

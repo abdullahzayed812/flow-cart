@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { pool } from '../config/database';
+import { db } from '../infrastructure/database/Database';
 
 const initDb = async () => {
     try {
@@ -10,7 +10,7 @@ const initDb = async () => {
         // Split by semicolon to get individual statements
         const statements = schema.split(';').filter(stmt => stmt.trim().length > 0);
 
-        const connection = await pool.getConnection();
+        const connection = await db.getPool().getConnection();
 
         for (const stmt of statements) {
             await connection.query(stmt);

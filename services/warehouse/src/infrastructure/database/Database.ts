@@ -3,20 +3,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+import { dbConfig } from '../../config/database';
+
 export class Database {
     private static instance: Database;
     private pool: mysql.Pool;
 
     private constructor() {
         this.pool = mysql.createPool({
-            host: process.env.DB_HOST || 'localhost',
-            port: parseInt(process.env.DB_PORT || '3306'),
-            user: process.env.DB_USER || 'abdo',
-            password: process.env.DB_PASSWORD || 'password',
-            database: process.env.DB_NAME || 'warehouse_db',
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0
+            ...dbConfig,
+            enableKeepAlive: true,
+            keepAliveInitialDelay: 0
         });
     }
 
@@ -25,6 +22,10 @@ export class Database {
             Database.instance = new Database();
         }
         return Database.instance;
+    }
+
+    public getPool(): mysql.Pool {
+        return this.pool;
     }
 
     public async query<T = any>(sql: string, params?: any[]): Promise<T> {

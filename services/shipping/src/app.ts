@@ -2,10 +2,9 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-import { checkDbConnection } from './config/database';
 import { connectRedis } from './config/redis';
 import routes from './presentation/routes';
-import { ApiResponse, AppError } from '@flow-cart/shared';
+import { ApiResponse, AppError, requestLogger } from '@flow-cart/shared';
 
 dotenv.config();
 
@@ -14,9 +13,10 @@ const PORT = process.env.PORT || 4004;
 
 app.use(cors());
 app.use(helmet());
+app.use(requestLogger);
 app.use(express.json());
 
-app.use('/shipping', routes);
+app.use('/', routes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err);
@@ -28,7 +28,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 const startServer = async () => {
-    await checkDbConnection();
+    // Database connection is handled by the singleton
     await connectRedis();
 
     app.listen(PORT, () => {

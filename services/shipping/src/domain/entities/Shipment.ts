@@ -1,4 +1,4 @@
-import { ShipmentStatus } from '../../../../shared/types/enums';
+import { ShipmentStatus } from '@flow-cart/shared';
 
 export class Shipment {
     constructor(

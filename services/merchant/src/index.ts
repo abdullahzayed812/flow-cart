@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { Database } from './infrastructure/database/Database';
+import { requestLogger } from '@flow-cart/shared';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ class MerchantService {
     private setupMiddlewares(): void {
         this.app.use(helmet());
         this.app.use(cors());
+        this.app.use(requestLogger);
         this.app.use(express.json());
     }
 
@@ -27,34 +29,34 @@ class MerchantService {
         const db = Database.getInstance();
 
         // Store management endpoints
-        this.app.post('/merchant/store', async (req, res) => {
+        this.app.post('/store', async (req, res) => {
             res.status(201).json({ success: true, message: 'Store created' });
         });
 
-        this.app.get('/merchant/store', async (req, res) => {
+        this.app.get('/store', async (req, res) => {
             res.status(200).json({ success: true, data: {} });
         });
 
-        this.app.put('/merchant/store', async (req, res) => {
+        this.app.put('/store', async (req, res) => {
             res.status(200).json({ success: true, message: 'Store updated' });
         });
 
         // Orders for merchant
-        this.app.get('/merchant/orders', async (req, res) => {
+        this.app.get('/orders', async (req, res) => {
             res.status(200).json({ success: true, data: [] });
         });
 
         // Products for merchant
-        this.app.get('/merchant/products', async (req, res) => {
+        this.app.get('/products', async (req, res) => {
             res.status(200).json({ success: true, data: [] });
         });
 
         // Payout requests
-        this.app.post('/merchant/payouts', async (req, res) => {
+        this.app.post('/payouts', async (req, res) => {
             res.status(201).json({ success: true, message: 'Payout requested' });
         });
 
-        this.app.get('/merchant/payouts', async (req, res) => {
+        this.app.get('/payouts', async (req, res) => {
             res.status(200).json({ success: true, data: [] });
         });
 

@@ -81,8 +81,8 @@ Each service uses environment variables. Default values are set in Docker Compos
 PORT=4001
 DB_HOST=db_auth
 DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=root
+DB_USER=abdo
+DB_PASSWORD=password
 DB_NAME=auth_db
 REDIS_HOST=redis
 REDIS_PORT=6379

@@ -1,43 +1,57 @@
-import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import dotenv from 'dotenv';
-import { checkDbConnection } from './config/database';
-import { connectRedis } from './config/redis';
-import routes from './presentation/routes';
-import { ApiResponse, AppError } from '@flow-cart/shared';
+import express, { Application } from "express";
+import cors from "cors";
+import helmet from "helmet";
+import dotenv from "dotenv";
+import { Database } from "./infrastructure/database/Database";
+import { createWarehouseRoutes } from "./presentation/routes/warehouseRoutes";
+import { ProductController } from "./presentation/controllers/ProductController";
+import { StockRepository, ProductRepository } from "./infrastructure/repositories/ProductRepository";
+import { StockController } from "./presentation/controllers/StockController";
+import { requestLogger } from "@flow-cart/shared";
+import { CreateProductUseCase } from "./application/usecases/CreateProductUseCase";
 
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 4003;
+export class WarehouseService {
+  private app: Application;
+  private port: number;
 
-app.use(cors());
-app.use(helmet());
-app.use(express.json());
+  constructor() {
+    this.app = express();
+    this.port = parseInt(process.env.PORT || "4003");
+    this.setupMiddlewares();
+    this.setupRoutes();
+  }
 
-app.use('/warehouse', routes);
+  private setupMiddlewares(): void {
+    this.app.use(helmet());
+    this.app.use(cors());
+    this.app.use(requestLogger);
+    this.app.use(express.json());
+  }
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err);
-    if (err instanceof AppError) {
-        res.status(err.statusCode).json(ApiResponse.error(err.message));
-    } else {
-        res.status(500).json(ApiResponse.error('Internal Server Error'));
-    }
-});
+  private setupRoutes(): void {
+    const db = Database.getInstance();
 
-const startServer = async () => {
-    await checkDbConnection();
-    await connectRedis();
+    const productRepo = new ProductRepository(db);
+    const stockRepo = new StockRepository(db);
 
-    const httpServer = require('http').createServer(app);
-    const { SocketService } = require('./infrastructure/services/SocketService');
-    SocketService.getInstance(httpServer);
+    const createProductUseCase = new CreateProductUseCase(productRepo);
 
-    httpServer.listen(PORT, () => {
-        console.log(`🚀 Warehouse Service running on port ${PORT}`);
+    const productController = new ProductController(createProductUseCase, productRepo);
+    const stockController = new StockController(stockRepo);
+
+    this.app.use("/", createWarehouseRoutes(productController, stockController));
+
+    // Health check
+    this.app.get("/health", (req, res) => {
+      res.status(200).json({ status: "ok", service: "warehouse" });
     });
-};
+  }
 
-startServer();
+  public start(): void {
+    this.app.listen(this.port, () => {
+      console.log(`📦 Warehouse Service running on port ${this.port}`);
+    });
+  }
+}
