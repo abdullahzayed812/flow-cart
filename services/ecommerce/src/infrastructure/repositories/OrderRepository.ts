@@ -1,7 +1,7 @@
 import { IOrderRepository } from '../../domain/repositories/IOrderRepository';
 import { Order, OrderItem } from '../../domain/entities/Order';
 import { Database } from '../database/Database';
-import { OrderStatus, PaymentStatus } from '../../../../shared/types/enums';
+import { OrderStatus, PaymentStatus } from '@flow-cart/shared';
 import { RowDataPacket } from 'mysql2';
 
 interface OrderRow extends RowDataPacket {

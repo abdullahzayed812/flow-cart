@@ -1,4 +1,4 @@
-import { Database } from '../infrastructure/database/Database';
+import { Database } from '../Database';
 import { v4 as uuidv4 } from 'uuid';
 
 const seed = async () => {
@@ -7,10 +7,9 @@ const seed = async () => {
         const db = Database.getInstance();
 
         // Check if stores exist
-        const [rows]: any = await db.query('SELECT COUNT(*) as count FROM stores');
+        const rows: any = await db.query('SELECT COUNT(*) as count FROM stores');
         if (rows[0].count > 0) {
             console.log('⚠️  Stores table already seeded. Skipping.');
-            await db.close();
             process.exit(0);
         }
 
@@ -30,7 +29,6 @@ const seed = async () => {
         );
 
         console.log('✅ Merchant Service seeded successfully');
-        await db.close();
         process.exit(0);
     } catch (error) {
         console.error('❌ Merchant Service seeding failed:', error);

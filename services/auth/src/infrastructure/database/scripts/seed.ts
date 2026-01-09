@@ -1,17 +1,15 @@
-import { pool } from '../config/database';
+import { db } from '../Database';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 
 const seed = async () => {
     try {
         console.log('🌱 Seeding Auth Service...');
-        const connection = await pool.getConnection();
 
         // Check if users exist
-        const [rows]: any = await connection.query('SELECT COUNT(*) as count FROM users');
+        const rows: any = await db.query('SELECT COUNT(*) as count FROM users');
         if (rows[0].count > 0) {
             console.log('⚠️  Users table already seeded. Skipping.');
-            connection.release();
             process.exit(0);
         }
 
@@ -39,14 +37,13 @@ const seed = async () => {
         ];
 
         for (const user of users) {
-            await connection.query(
+            await db.query(
                 'INSERT INTO users (id, email, password_hash, role) VALUES (?, ?, ?, ?)',
                 [user.id, user.email, user.password_hash, user.role]
             );
         }
 
         console.log('✅ Auth Service seeded successfully');
-        connection.release();
         process.exit(0);
     } catch (error) {
         console.error('❌ Auth Service seeding failed:', error);

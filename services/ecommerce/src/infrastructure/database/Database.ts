@@ -1,25 +1,12 @@
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { dbConfig } from '../../config/db.config';
 
 export class Database {
     private static instance: Database;
     private pool: mysql.Pool;
 
     private constructor() {
-        this.pool = mysql.createPool({
-            host: process.env.DB_HOST || 'localhost',
-            port: parseInt(process.env.DB_PORT || '3306'),
-            user: process.env.DB_USER || 'abdo',
-            password: process.env.DB_PASSWORD || 'password',
-            database: process.env.DB_NAME || 'ecommerce_db',
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0,
-            enableKeepAlive: true,
-            keepAliveInitialDelay: 0
-        });
+        this.pool = mysql.createPool(dbConfig);
     }
 
     public static getInstance(): Database {

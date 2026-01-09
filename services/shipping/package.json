@@ -6,7 +6,10 @@
         "dev": "nodemon src/app.ts",
         "build": "tsc",
         "start": "node dist/app.js",
-        "seed": "ts-node src/database/seed.ts"
+        "seed": "ts-node src/infrastructure/database/scripts/seed.ts",
+        "db:init": "ts-node src/infrastructure/database/scripts/init.ts",
+        "db:reset": "ts-node src/infrastructure/database/scripts/reset.ts",
+        "db:seed": "ts-node src/infrastructure/database/scripts/seed.ts"
     },
     "dependencies": {
         "@flow-cart/shared": "*",

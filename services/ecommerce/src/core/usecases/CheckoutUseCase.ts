@@ -1,6 +1,6 @@
 import { ICartRepository } from '../../domain/repositories/ICartRepository';
 import { IOrderRepository } from '../../domain/repositories/IOrderRepository';
-import { IProductRepository } from '../../domain/repositories/IProductRepository';
+import { WarehouseClient } from '../../infrastructure/clients/WarehouseClient';
 import { Order, OrderItem } from '../../domain/entities/Order';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -26,7 +26,7 @@ export class CheckoutUseCase {
     constructor(
         private cartRepository: ICartRepository,
         private orderRepository: IOrderRepository,
-        private productRepository: IProductRepository
+        private warehouseClient: WarehouseClient
     ) { }
 
     async execute(dto: CheckoutDTO): Promise<Order[]> {
@@ -88,7 +88,7 @@ export class CheckoutUseCase {
         const merchantMap = new Map<string, MerchantOrder>();
 
         for (const item of cartItems) {
-            const product = await this.productRepository.findById(item.productId);
+            const product = await this.warehouseClient.getProduct(item.productId);
             if (!product) {
                 throw new Error(`Product ${item.productId} not found`);
             }

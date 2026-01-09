@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { RegisterUserUseCase } from "../../application/usecases/RegisterUserUseCase";
-import { LoginUseCase } from "../../application/usecases/LoginUseCase";
-import { ApplyMerchantUseCase } from "../../application/usecases/ApplyMerchantUseCase";
-import { RefreshTokenUseCase } from "../../application/usecases/RefreshTokenUseCase";
-import { GetUserProfileUseCase } from "../../application/usecases/GetUserProfileUseCase";
+import { RegisterUserUseCase } from "../../core/usecases/RegisterUserUseCase";
+import { LoginUseCase } from "../../core/usecases/LoginUseCase";
+import { ApplyMerchantUseCase } from "../../core/usecases/ApplyMerchantUseCase";
+import { RefreshTokenUseCase } from "../../core/usecases/RefreshTokenUseCase";
+import { GetUserProfileUseCase } from "../../core/usecases/GetUserProfileUseCase";
 import { AuthRequest } from "../middlewares/authMiddleware";
 
 export class AuthController {

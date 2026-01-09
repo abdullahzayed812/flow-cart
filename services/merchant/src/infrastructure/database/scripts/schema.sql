@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS stores (
+    id VARCHAR(36) PRIMARY KEY,
+    merchant_id VARCHAR(36) NOT NULL,
+    store_name VARCHAR(255) NOT NULL,
+    store_description TEXT,
+    contact_email VARCHAR(255),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS store_settings (
+    id VARCHAR(36) PRIMARY KEY,
+    store_id VARCHAR(36) NOT NULL,
+    currency VARCHAR(10) DEFAULT 'USD',
+    tax_rate DECIMAL(5,2) DEFAULT 0.00,
+    shipping_fee DECIMAL(10,2) DEFAULT 0.00,
+    FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE
+);

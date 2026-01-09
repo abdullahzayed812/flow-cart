@@ -6,7 +6,10 @@
         "dev": "nodemon src/index.ts",
         "build": "tsc",
         "start": "node dist/index.js",
-        "seed": "ts-node src/database/seed.ts"
+        "seed": "ts-node src/infrastructure/database/scripts/seed.ts",
+        "db:init": "ts-node src/infrastructure/database/scripts/init.ts",
+        "db:reset": "ts-node src/infrastructure/database/scripts/reset.ts",
+        "db:seed": "ts-node src/infrastructure/database/scripts/seed.ts"
     },
     "dependencies": {
         "express": "^4.18.2",
